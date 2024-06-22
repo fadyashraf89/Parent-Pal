@@ -146,6 +146,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
                         },
                         child: Text('Ask Question',
                             style: TextStyle(
+                                color: Colors.white,
                                 fontFamily: "Rubik",
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20)),
