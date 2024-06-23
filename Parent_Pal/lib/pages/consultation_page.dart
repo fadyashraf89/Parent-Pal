@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parent_pal/models/expert_card.dart';
+import 'package:parent_pal/models/card_with_image.dart';
 import 'package:parent_pal/models/footer.dart';
 
 class ConsultationPage extends StatefulWidget {
@@ -11,7 +11,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: FooterWidget(),
+      bottomNavigationBar: FooterWidget(),
       backgroundColor: Color(0xFFF8F8F8), // Light gray background
       appBar: AppBar(
         backgroundColor: Color(0xFF5571A7),
@@ -102,7 +102,8 @@ class _ConsultationPageState extends State<ConsultationPage> {
 
                 Container(
                   margin: EdgeInsets.only(top: 20.0),
-                  width: double.infinity, // Full width
+                  width: double.infinity,
+                  // Full width
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -144,11 +145,10 @@ class _ConsultationPageState extends State<ConsultationPage> {
                           // Handle submit question logic
                         },
                         child: Text('Ask Question',
-                        style: TextStyle(
-                          fontFamily: "Rubik",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20
-                        )),
+                            style: TextStyle(
+                                fontFamily: "Rubik",
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20)),
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(double.infinity, 50),
                           backgroundColor: Color(0xFF5571A7),
@@ -184,23 +184,22 @@ class _ConsultationPageState extends State<ConsultationPage> {
                     childAspectRatio:
                         1, // Aspect ratio of each card (width/height)
                   ),
-                  itemCount: 6,
+                  itemCount: 10,
                   // Adjust for number of experts
-                  itemBuilder: (context, index) => ExpertCard(
-                    name: 'Dr. Robert Andreson',
-                    specialty: 'Obstetrician and Gynecologist',
-                    image: "assets/images/avatar.png"
+                  itemBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    // Add spacing below
+                    child: CardWithImage(
+                        title: 'Dr. Robert Andreson',
+                        description: 'Obstetrician and Gynecologist',
+                        image: "assets/images/avatar.png"),
                   ),
                 ),
-
-                SizedBox(height: 20.0), // Add spacing
               ],
             ),
           ),
-
         ),
       ),
     );
   }
 }
-
