@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:parent_pal/pages/login_page.dart';
-import 'package:parent_pal/pages/emergencies_page.dart';
 import 'package:parent_pal/pages/child_homepage.dart';
 
 
