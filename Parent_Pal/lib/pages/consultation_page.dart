@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parent_pal/models/expert_card.dart';
+import 'package:parent_pal/models/card_with_image.dart';
 import 'package:parent_pal/models/footer.dart';
 
 class ConsultationPage extends StatefulWidget {
@@ -146,7 +146,6 @@ class _ConsultationPageState extends State<ConsultationPage> {
                         },
                         child: Text('Ask Question',
                             style: TextStyle(
-                                color: Colors.white,
                                 fontFamily: "Rubik",
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20)),
@@ -190,9 +189,9 @@ class _ConsultationPageState extends State<ConsultationPage> {
                   itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.only(bottom: 20.0),
                     // Add spacing below
-                    child: ExpertCard(
-                        name: 'Dr. Robert Andreson',
-                        specialty: 'Obstetrician and Gynecologist',
+                    child: CardWithImage(
+                        title: 'Dr. Robert Andreson',
+                        description: 'Obstetrician and Gynecologist',
                         image: "assets/images/avatar.png"),
                   ),
                 ),
