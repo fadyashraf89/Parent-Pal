@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:parent_pal/pages/child_homepage.dart';
-
+import 'package:parent_pal/pages/bedtime_stories_page.dart';
+import 'package:parent_pal/pages/edit_child_info_page.dart';
+import 'package:parent_pal/pages/login_page.dart';
+import 'package:parent_pal/pages/consultation-page.dart';
 
 void main() {
   runApp(const ParentPal());
@@ -12,12 +14,12 @@ class ParentPal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MyHomePage(
-        name: "Fady Ashraf",
-        age: 21,
-        image: "assets/images/fido.png"
-      )
+        debugShowCheckedModeBanner: false,
+        // home: ConsultationPage()
+        // home: StoryListPage()
+        home: ChildInfo()
+        // home: ConsultationPage()
+    //     home: ConsultationPage()
 
     );
   }
