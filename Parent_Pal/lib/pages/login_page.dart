@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                     // Handle login logic
                   },
                   child:
-                  Text('Login', style: TextStyle(fontFamily: "Pacifico", fontSize: 20)),
+                  Text('Login', style: TextStyle(fontFamily: "Pacifico", fontSize: 20,color:Colors.white)),
                   style: ElevatedButton.styleFrom(
                       minimumSize: Size(double.infinity, 50),
                       backgroundColor: Color(0xFF5571A7)),
