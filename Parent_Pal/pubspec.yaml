@@ -65,7 +65,12 @@ flutter:
 
   assets:
     - assets/images/Stories/
-    - assets/images/Stories/catch-the-cat/
+    - assets/images/Stories/Catch-That-Cat/
+    - assets/images/Stories/Dive-short/
+    - assets/images/Stories/Kokoro-short/
+    - assets/images/Stories/Monkey-Business/
+    - assets/images/Stories/Tiny-Mermaid/
+    - assets/images/Stories/The-Smart-Frog/
     - assets/images/
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/assets-and-images/#resolution-aware

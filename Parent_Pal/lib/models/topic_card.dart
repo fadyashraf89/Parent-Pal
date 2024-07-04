@@ -22,29 +22,26 @@ class TopicCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(width: 15.0), // Add spacing
           Padding(
-            padding: const EdgeInsets.only(top: 10.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
+                  textAlign: TextAlign.center,
                   title,
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF5571A7),
                   ),
                 ),
                 Text(
+                  textAlign: TextAlign.center,
                   description,
                   style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
+                    fontSize: 16,
+                    color: Colors.black.withOpacity(0.7),
                   ),
                 ),
               ],

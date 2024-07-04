@@ -11,6 +11,9 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   Color focusedColor = Color(0xFF5571A7); // Define focused border color
 
+  // Role selection
+  String _selectedRole = 'Parent'; // Default role
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,21 +64,53 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 // Password text field with frame
-                TextField(
-                  style: TextStyle(fontFamily: "Rubik"),
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: focusedColor, width: 2.0),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: TextField(
+                    style: TextStyle(fontFamily: "Rubik"),
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(color: focusedColor, width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                      ),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                    obscureText: true,
+                  ),
+                ),
+                // Role selection dropdown
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedRole,
+                    items: ['Parent', 'Consultant'].map((String role) {
+                      return DropdownMenuItem<String>(
+                        value: role,
+                        child: Text(role),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedRole = newValue!;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Role',
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(color: focusedColor, width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                      ),
                     ),
                   ),
-                  obscureText: true,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -99,7 +134,18 @@ class _LoginPageState extends State<LoginPage> {
                 // Login button with full width
                 ElevatedButton(
                   onPressed: () {
-                    // Handle login logic
+                    // Handle login logic based on role
+                    String email = _emailController.text;
+                    String password = _passwordController.text;
+                    String role = _selectedRole;
+
+                    // Implement your login logic here
+                    // For example:
+                    if (role == 'Parent') {
+                      // Parent login logic
+                    } else if (role == 'Consultant') {
+                      // Consultant login logic
+                    }
                   },
                   child:
                   Text('Login', style: TextStyle(fontFamily: "Pacifico", fontSize: 20,color:Colors.white)),
