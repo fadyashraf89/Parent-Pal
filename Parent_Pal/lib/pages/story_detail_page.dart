@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:parent_pal/models/MyAppBar.dart';
 
 class StoryDetailPage extends StatelessWidget {
   final String storyTitle;
-  final int numberOfImages; // Number of images you want to display
+  final int numberOfImages = 100;
 
-  StoryDetailPage({required this.storyTitle, this.numberOfImages = 30});
+  StoryDetailPage({required this.storyTitle});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(storyTitle),
+      appBar: PreferredSize(
+        preferredSize:
+        Size.fromHeight(kToolbarHeight), // Adjust height if needed
+        child: MyAppBar(PageName: storyTitle),
       ),
       body: ListView.builder(
         itemCount: numberOfImages,
         itemBuilder: (context, index) {
-          // Assuming your images are named in the pattern '1.jpg', '2.jpg', etc.
-          String imagePath = 'assets/images/Stories/catch-the-cat/${index + 1}.jpg';
+          String imagePath = 'assets/images/Stories/$storyTitle/${index + 1}.jpg';
           return Image.asset(
             imagePath,
             errorBuilder: (context, error, stackTrace) {
-              // Display a placeholder or error message if the image fails to load
-              return Center(child: Text('Image not found: $imagePath'));
+              return Center();
             },
           );
         },

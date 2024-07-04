@@ -1,40 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:parent_pal/models/MyAppBar.dart';
 import 'package:parent_pal/models/card_with_image.dart';
 import 'package:parent_pal/models/footer.dart';
+import 'package:parent_pal/pages/activities.dart';
+import 'package:parent_pal/pages/bedtime_stories_page.dart';
+import 'package:parent_pal/pages/emergencies_page.dart';
+import 'package:parent_pal/pages/suggest_schools.dart';
 
-class MyHomePage extends StatelessWidget {
+class ChildHomePage extends StatelessWidget {
   final String name;
-  final int age;
   final String image;
 
-  MyHomePage({super.key, required this.name, required this.age, required this.image});
+  ChildHomePage({super.key, required this.name, required this.image});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: FooterWidget(),
       backgroundColor: Color(0xFFF8F8F8), // Light gray background
-      appBar: AppBar(
-        backgroundColor: Color(0xFF5571A7),
-        title: Padding(
-          padding: const EdgeInsets.only(left: 100.0),
-          child: Text(
-            'Home',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: Image.asset(
-            "assets/images/app-logo.png",
-            width: 50,
-            height: 50,
-          ),
-        ),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        // Adjust height if needed
+        child: MyAppBar(PageName: "Home"),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -42,29 +29,6 @@ class MyHomePage extends StatelessWidget {
             children: [
               SizedBox(height: 20.0), // Add spacing
 
-              // Search bar
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    contentPadding: const EdgeInsets.all(15.0),
-                    hintText: 'Search',
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 20.0), // Add spacing
               // **Top Section**
               Container(
                 decoration: BoxDecoration(
@@ -87,7 +51,6 @@ class MyHomePage extends StatelessWidget {
 
               // **Body Section**
               Container(
-                color: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
@@ -98,7 +61,7 @@ class MyHomePage extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                "$name ($age years) ",
+                                "Hello, $name  ",
                                 // Include spaces for better formatting
                                 style: TextStyle(
                                   fontSize: 16.0,
@@ -151,34 +114,54 @@ class MyHomePage extends StatelessWidget {
                         physics: NeverScrollableScrollPhysics(),
                         // Disable scrolling if needed
                         children: [
-                          Container(
-                              child: CardWithImage(
-                            title: "Bedtime Stories",
-                            description:
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit Vivamus.",
-                            image: "assets/images/bedtime-stories.png",
-                          )),
-                          Container(
-                              child: CardWithImage(
-                            title: "School Suggestions",
-                            description:
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit Vivamus.",
-                            image: "assets/images/bedtime-stories.png",
-                          )),
-                          Container(
-                              child: CardWithImage(
-                            title: "Family Activities",
-                            description:
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit Vivamus.",
-                            image: "assets/images/bedtime-stories.png",
-                          )),
-                          Container(
-                              child: CardWithImage(
-                            title: "Emergencies",
-                            description:
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit Vivamus.",
-                            image: "assets/images/bedtime-stories.png",
-                          )),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => StoryListPage()),
+                              );
+                            },
+                            child: CardWithImage(
+                              title: "Bedtime Stories",
+                              image: "assets/images/bedtime-stories.png",
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => SchoolsMap()),
+                              );
+                            },
+                            child: CardWithImage(
+                              title: "School Suggestions",
+                              image: "assets/images/school.png",
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ActivitiesScreen()),
+                              );
+                            },
+                            child: CardWithImage(
+                              title: "Family Activities",
+                              image: "assets/images/activities.png",
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => EmergencyReference()),
+                              );
+                            },
+                            child: CardWithImage(
+                              title: "Emergency Reference",
+                              image: "assets/images/emergency.png",
+                            ),
+                          ),
                         ],
                       )
                     ],
@@ -193,3 +176,5 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
+
+
