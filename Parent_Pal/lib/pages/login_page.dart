@@ -16,6 +16,9 @@ class _LoginPageState extends State<LoginPage> {
   // Role selection
   String _selectedRole = 'Parent'; // Default role
 
+  // Role selection
+  String _selectedRole = 'Parent'; // Default role
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
