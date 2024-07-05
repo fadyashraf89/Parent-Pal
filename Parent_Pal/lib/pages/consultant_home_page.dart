@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parent_pal/models/expert_card.dart';
-import 'package:parent_pal/models/footer.dart';
-import 'package:parent_pal/pages/QAConsultantPage.dart';
+import 'package:parent_pal/pages/qa_page.dart';
 
 class ConsultantHomePage extends StatefulWidget {
   @override
@@ -30,7 +29,7 @@ class _ConsultantHomePageState extends State<ConsultantHomePage> {
   // Define a list of pages corresponding to each bottom navigation item
   static List<Widget> _widgetOptions = <Widget>[
     ConsultantHomePage(), // Placeholder for the current page (ConsultationPage)
-    QAConsultantPage(qaData: []), // QAPage to navigate to
+    QAPage(qaData: []), // QAPage to navigate to
     // Add more pages if necessary
   ];
 
@@ -110,65 +109,66 @@ class _ConsultantHomePageState extends State<ConsultantHomePage> {
                     ),
                   ),
                 ),
-                // SizedBox(height: 20.0), // Add spacing
-                //
-                // Container(
-                //   margin: EdgeInsets.only(top: 20.0),
-                //   width: double.infinity, // Full width
-                //   padding: const EdgeInsets.all(20.0),
-                //   decoration: BoxDecoration(
-                //     color: Colors.white,
-                //     borderRadius: BorderRadius.circular(10.0),
-                //     boxShadow: [
-                //       BoxShadow(
-                //         color: Colors.grey.withOpacity(0.2),
-                //         spreadRadius: 1,
-                //         blurRadius: 3,
-                //         offset: Offset(0, 2), // Bottom shadow
-                //       ),
-                //     ],
-                //   ),
-                //   child: Column(
-                //     crossAxisAlignment: CrossAxisAlignment.start,
-                //     children: [
-                //       Text(
-                //         'What\'s your question?',
-                //         style: TextStyle(
-                //             fontFamily: "Rubik",
-                //             fontSize: 18,
-                //             fontWeight: FontWeight.bold,
-                //             color: Color(0xFF5571A7)),
-                //       ),
-                //       SizedBox(height: 10.0),
-                //       TextField(
-                //         controller: _questionController,
-                //         maxLines: 5, // Allow multiple lines for input
-                //         decoration: InputDecoration(
-                //           hintText: 'Type your question here...',
-                //           border: OutlineInputBorder(
-                //             borderRadius: BorderRadius.circular(10.0),
-                //             borderSide: BorderSide(color: Colors.grey),
-                //           ),
-                //         ),
-                //       ),
-                //       SizedBox(height: 10.0),
-                //       ElevatedButton(
-                //         onPressed: _submitQuestion,
-                //         child: Text('Ask Question',
-                //             style: TextStyle(
-                //                 color: Colors.white,
-                //                 fontFamily: "Rubik",
-                //                 fontWeight: FontWeight.bold,
-                //                 fontSize: 20)),
-                //         style: ElevatedButton.styleFrom(
-                //           minimumSize: Size(double.infinity, 50),
-                //           backgroundColor: Color(0xFF5571A7),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
 
+                SizedBox(height: 20.0), // Add spacing
+
+                // Your Q&A Bar
+                Container(
+                  width: double.infinity, // Full width
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30.0),
+                    border: Border.all(
+                      color: Color(0xFF5571A7),
+                      width: 1, // Adjust border width as needed
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: CircleAvatar(
+                              backgroundColor: Color(0xFF5571A7),
+                              child: IconButton(
+                                icon: Icon(Icons.email_rounded),
+                                color: Colors.white,
+                                iconSize: 20,
+                                onPressed: () {
+                                  // Handle button press (optional)
+                                },
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'Your Q&A',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontFamily: "Rubik",
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.arrow_right),
+                        color: Color(0xFF5571A7),
+                        iconSize: 40,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => QAPage(qaData: qaData),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
 
                 SizedBox(height: 20.0), // Add spacing
               ],

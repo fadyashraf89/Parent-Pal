@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:parent_pal/models/expert_card.dart';
-import 'package:parent_pal/models/footer.dart';
 import 'package:parent_pal/pages/qa_page.dart';
 
 class ConsultationPage extends StatefulWidget {
@@ -25,44 +24,9 @@ class _ConsultationPageState extends State<ConsultationPage> {
     }
   }
 
-  int _selectedIndex = 0; // Index for the selected bottom navigation item
-
-  // Define a list of pages corresponding to each bottom navigation item
-  static List<Widget> _widgetOptions = <Widget>[
-    ConsultationPage(), // Placeholder for the current page (ConsultationPage)
-    QAPage(qaData: [],), // QAPage to navigate to
-    // Add more pages if necessary
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    // Navigate to the selected page
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => _widgetOptions[index]),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer),
-            label: 'Q&A',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue, // Adjust as needed
-        onTap: _onItemTapped,
-      ),
       backgroundColor: Color(0xFFF8F8F8), // Light gray background
       appBar: AppBar(
         backgroundColor: Color(0xFF5571A7),

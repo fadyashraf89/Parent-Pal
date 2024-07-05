@@ -1,106 +1,100 @@
 import 'package:flutter/material.dart';
-import 'package:parent_pal/models/footer.dart';
 
-class QADetailPage extends StatelessWidget {
+class QADetailPage extends StatefulWidget {
   final String question;
   final String date;
-  final String answer;
+  final List<String> answers;
+  final ValueChanged<List<String>> onAnswerSubmitted;
 
-  QADetailPage({required this.question, required this.date, required this.answer});
+  const QADetailPage({
+    required this.question,
+    required this.date,
+    required this.answers,
+    required this.onAnswerSubmitted,
+  });
+
+  @override
+  _QADetailPageState createState() => _QADetailPageState();
+}
+
+class _QADetailPageState extends State<QADetailPage> {
+  late List<String> answers;
+
+  @override
+  void initState() {
+    super.initState();
+    answers = List.from(widget.answers); // Initialize the answers list
+  }
+
+  void _submitAnswer(String answer) {
+    setState(() {
+      answers.add("Answer ${answers.length + 1}: $answer");
+    });
+    widget.onAnswerSubmitted(answers);
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
+    String currentAnswer = '';
+
     return Scaffold(
-      bottomNavigationBar: FooterWidget(),
-      backgroundColor: Color(0xFFF8F8F8),
       appBar: AppBar(
-        backgroundColor: Color(0xFF5571A7),
-        title: Padding(
-          padding: const EdgeInsets.only(left: 50.0),
-          child: Text(
-            'Q&A Detail',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: Image.asset(
-            "assets/images/app-logo.png",
-            width: 50,
-            height: 50,
-          ),
-        ),
+        title: Text('Answer Question'),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: SingleChildScrollView(
-            physics: ClampingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 20.0),
-                Text(
-                  'Question:',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF5571A7),
-                    fontFamily: "Rubik",
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  question,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: "Rubik",
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                Text(
-                  'Date:',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF5571A7),
-                    fontFamily: "Rubik",
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  date,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: "Rubik",
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                Text(
-                  'Answer:',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF5571A7),
-                    fontFamily: "Rubik",
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  answer.isEmpty ? 'No answer provided yet.' : answer,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: "Rubik",
-                  ),
-                ),
-                SizedBox(height: 20.0),
-              ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Question:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          ),
+            SizedBox(height: 8),
+            Text(widget.question, style: TextStyle(fontSize: 16)),
+            SizedBox(height: 16),
+            Text(
+              'Date:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(widget.date, style: TextStyle(fontSize: 16)),
+            SizedBox(height: 16),
+            Text(
+              'Answers:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Expanded(
+              child: ListView.builder(
+                itemCount: answers.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Text(answers[index], style: TextStyle(fontSize: 16)),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              decoration: InputDecoration(
+                hintText: 'Enter your answer...',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                currentAnswer = value;
+              },
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _submitAnswer(currentAnswer),
+              child: Text('Submit'),
+            ),
+          ],
         ),
       ),
     );

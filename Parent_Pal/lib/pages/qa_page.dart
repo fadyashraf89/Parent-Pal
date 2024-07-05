@@ -2,10 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:parent_pal/models/footer.dart';
 import 'package:parent_pal/pages/qa_details_page.dart';
 
-class QAPage extends StatelessWidget {
+class QAPage extends StatefulWidget {
   final List<Map<String, String>> qaData;
 
   QAPage({required this.qaData});
+
+  @override
+  _QAPageState createState() => _QAPageState();
+}
+
+class _QAPageState extends State<QAPage> {
+  List<Map<String, String>> qaData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    qaData = widget.qaData;
+  }
+
+  void _updateAnswer(int index, List<String> newAnswers) {
+    setState(() {
+      qaData[index]['answers'] = newAnswers.join('; ');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +57,9 @@ class QAPage extends StatelessWidget {
         child: ListView.builder(
           itemCount: qaData.length,
           itemBuilder: (context, index) {
+            List<String> answers = qaData[index]['answers'] != null
+                ? qaData[index]['answers']!.split('; ')
+                : [];
             return GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -46,7 +68,10 @@ class QAPage extends StatelessWidget {
                     builder: (context) => QADetailPage(
                       question: qaData[index]['question']!,
                       date: qaData[index]['date']!,
-                      answer: qaData[index]['answer']!,
+                      answers: answers,
+                      onAnswerSubmitted: (newAnswers) {
+                        _updateAnswer(index, newAnswers);
+                      },
                     ),
                   ),
                 );
@@ -85,6 +110,20 @@ class QAPage extends StatelessWidget {
                         color: Colors.grey,
                       ),
                     ),
+                    SizedBox(height: 10.0),
+                    if (answers.isNotEmpty)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: answers.map((answer) {
+                          return Text(
+                            answer,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          );
+                        }).toList(),
+                      ),
                   ],
                 ),
               ),
