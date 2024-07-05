@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -219,6 +219,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
                     Navigator.pushNamed(context, '/login');
                   },
                   child: Text(

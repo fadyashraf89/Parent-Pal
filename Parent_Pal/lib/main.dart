@@ -18,12 +18,12 @@ class ParentPal extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: ConsultantHomePage()
-        // home: ConsultationPage()
-        // home: ChildInfo()
-        // home: ConsultationPage()
-        // home: ConsultationPage()
-       // home: SignUpPage()
+        // home: LoginPage()
+      home: ConsultantHomePage()
+      // home: ChildInfo()
+      // home: ConsultationPage()
+      // home: ConsultationPage()
+      // home: SignUpPage()
       // home: ChildHomePage(name: "fady",age: 13,image: 'assets/images/fido.png',)
     );
   }

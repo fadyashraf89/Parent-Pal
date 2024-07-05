@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'sign-up.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -163,6 +164,10 @@ class _LoginPageState extends State<LoginPage> {
                     TextButton(
                       onPressed: () {
                         // Navigate to sign up page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignUpPage()),
+                        );
                       },
                       child: Text('Sign Up',
                           style: TextStyle(
@@ -179,4 +184,4 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-void main() => runApp(LoginPage());
+void main() => runApp(MaterialApp(home: LoginPage()));
