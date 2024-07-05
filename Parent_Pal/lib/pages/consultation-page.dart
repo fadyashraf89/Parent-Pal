@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:parent_pal/models/expert_card.dart';
+import 'package:parent_pal/models/MyAppBar.dart';
+import 'package:parent_pal/models/card_with_image.dart';
 import 'package:parent_pal/models/footer.dart';
 import 'package:parent_pal/pages/qa_page.dart';
 
@@ -64,27 +65,10 @@ class _ConsultationPageState extends State<ConsultationPage> {
         onTap: _onItemTapped,
       ),
       backgroundColor: Color(0xFFF8F8F8), // Light gray background
-      appBar: AppBar(
-        backgroundColor: Color(0xFF5571A7),
-        title: Padding(
-          padding: const EdgeInsets.only(left: 50.0),
-          child: Text(
-            'Consultation',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: Image.asset(
-            "assets/images/app-logo.png",
-            width: 50,
-            height: 50,
-          ),
-        ),
+      appBar: PreferredSize(
+        preferredSize:
+        Size.fromHeight(kToolbarHeight), // Adjust height if needed
+        child: MyAppBar(PageName: "Consultation"),
       ),
       body: SafeArea(
         child: Padding(
@@ -238,9 +222,8 @@ class _ConsultationPageState extends State<ConsultationPage> {
                   ),
                   itemCount: 6,
                   // Adjust for number of experts
-                  itemBuilder: (context, index) => ExpertCard(
-                    name: 'Dr. Robert Andreson',
-                    specialty: 'Obstetrician and Gynecologist',
+                  itemBuilder: (context, index) => CardWithImage(
+                    title: 'Dr. Robert Andreson',
                     image: "assets/images/avatar.png",
                   ),
                 ),

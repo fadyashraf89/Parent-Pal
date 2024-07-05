@@ -191,7 +191,6 @@ class _ConsultationPageState extends State<ConsultationPage> {
                     // Add spacing below
                     child: CardWithImage(
                         title: 'Dr. Robert Andreson',
-                        description: 'Obstetrician and Gynecologist',
                         image: "assets/images/avatar.png"),
                   ),
                 ),

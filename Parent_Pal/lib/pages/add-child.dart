@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:parent_pal/models/MyAppBar.dart';
+
 class AddChildPage extends StatefulWidget {
   @override
   
@@ -31,31 +33,22 @@ class _AddChildPageState extends State<AddChildPage> {
     double screenHeight = MediaQuery.of(context).size.height;
     
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          'Add Child',
-          style: TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight), // Adjust height if needed
+        child: MyAppBar(PageName: "Add Child"),
       ),
-      body: Center(
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Center(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
+                SizedBox(height: 20,),
                 Stack(
-                  alignment: Alignment.center,
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
+                        borderRadius: BorderRadius.circular(50.0),
                         gradient: LinearGradient(
                           colors: [Colors.blue[100]!, Colors.pink[100]!],
                           begin: Alignment.topCenter,
@@ -63,11 +56,10 @@ class _AddChildPageState extends State<AddChildPage> {
                         ),
                       ),
                       height: 200,
-                      width: double.infinity,
+                      width: 200,
                       child: _selectedImage == null
                           ? Center(child: Icon(Icons.person, size: 100, color: Colors.white))
-                          : ClipRRect(
-                              borderRadius: BorderRadius.circular(15.0),
+                          : ClipOval(
                               child: Image.file(
                                 _selectedImage!,
                                 width: screenWidth * 0.5, // 50% of screen width
@@ -78,38 +70,40 @@ class _AddChildPageState extends State<AddChildPage> {
                     Positioned(
                       bottom: 10,
                       right: 10,
-                      child: FloatingActionButton(
-                        backgroundColor: Colors.white,
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return SafeArea(
-                                child: Wrap(
-                                  children: [
-                                    ListTile(
-                                      leading: Icon(Icons.photo_library),
-                                      title: Text('Gallery'),
-                                      onTap: () {
-                                        _pickImage(ImageSource.gallery);
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.photo_camera),
-                                      title: Text('Camera'),
-                                      onTap: () {
-                                        _pickImage(ImageSource.camera);
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        child: Icon(Icons.camera_alt, color: Colors.blue),
+                      child: CircleAvatar(
+                        child: FloatingActionButton(
+                          backgroundColor: Colors.white,
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SafeArea(
+                                  child: Wrap(
+                                    children: [
+                                      ListTile(
+                                        leading: Icon(Icons.photo_library, color: Color(0xFF5571A7)),
+                                        title: Text('Gallery'),
+                                        onTap: () {
+                                          _pickImage(ImageSource.gallery);
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.photo_camera, color: Color(0xFF5571A7),),
+                                        title: Text('Camera'),
+                                        onTap: () {
+                                          _pickImage(ImageSource.camera);
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Icon(Icons.camera_alt, color: Color(0xFF5571A7)),
+                        ),
                       ),
                     ),
                   ],
@@ -120,9 +114,9 @@ class _AddChildPageState extends State<AddChildPage> {
                     labelText: 'Name',
                     hintText: 'Full Name',
                     border: OutlineInputBorder(),
-                    labelStyle: TextStyle(color: Colors.blue),
+                    labelStyle: TextStyle(color: Color(0xFF5571A7)),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: BorderSide(color: Color(0xFF5571A7)),
                     ),
                   ),
                 ),
@@ -132,9 +126,9 @@ class _AddChildPageState extends State<AddChildPage> {
                     labelText: 'Birthday',
                     hintText: 'MM / DD / YYYY',
                     border: OutlineInputBorder(),
-                    labelStyle: TextStyle(color: Colors.blue),
+                    labelStyle: TextStyle(color: Color(0xFF5571A7)),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: BorderSide(color: Color(0xFF5571A7)),
                     ),
                   ),
                   keyboardType: TextInputType.datetime,
@@ -144,6 +138,7 @@ class _AddChildPageState extends State<AddChildPage> {
                   children: [
                     Expanded(
                       child: DropdownButtonFormField<String>(
+                        focusColor: Color(0xFF5571A7),
                         value: _selectedGender,
                         items: ['Gender', 'Male', 'Female'].map((String value) {
                           return DropdownMenuItem<String>(
@@ -191,28 +186,17 @@ class _AddChildPageState extends State<AddChildPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
-                CheckboxListTile(
-                  title: Text("I'm pregnant"),
-                  value: _isPregnant,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _isPregnant = newValue!;
-                    });
-                  },
-                  controlAffinity: ListTileControlAffinity.leading,
-                  activeColor: Colors.blue,
-                ),
-                SizedBox(height: 10),
+
+                SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     // Handle the Add button press
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Color(0xFF5571A7),
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   ),
-                  child: Text('Add', style: TextStyle(color: Colors.white)),
+                  child: Text('Add', style: TextStyle(color: Colors.white, fontSize: 20)),
                 ),
               ],
             ),

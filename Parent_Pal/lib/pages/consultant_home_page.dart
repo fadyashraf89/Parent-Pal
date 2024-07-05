@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parent_pal/models/expert_card.dart';
+import 'package:parent_pal/models/card_with_image.dart';
 import 'package:parent_pal/models/footer.dart';
 import 'package:parent_pal/pages/QAConsultantPage.dart';
 
@@ -238,9 +238,8 @@ class _ConsultantHomePageState extends State<ConsultantHomePage> {
                   ),
                   itemCount: 6,
                   // Adjust for number of experts
-                  itemBuilder: (context, index) => ExpertCard(
-                    name: 'Dr. Robert Andreson',
-                    specialty: 'Obstetrician and Gynecologist',
+                  itemBuilder: (context, index) => CardWithImage(
+                    title: 'Dr. Robert Andreson',
                     image: "assets/images/avatar.png",
                   ),
                 ),

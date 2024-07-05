@@ -1,5 +1,6 @@
 import 'dart:io';
-
+import '../firebase_auth_implementation.dart'; // Adjust path as per your project structure
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -12,14 +13,19 @@ class _SignUpPageState extends State<SignUpPage> {
   String _selectedGender = 'Male';
   String _selectedStatus = 'Married';
   bool _isConsultant = false;
-
+  final FirebaseAuthen _auth = FirebaseAuthen();
   // Controllers for text fields
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   File? _licenseImage; // Variable to store the picked image file
-
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -52,7 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/parent.png',
+                  'assets/images/app-logo.png',
                   width: screenWidth * 0.5, // 50% of screen width
                   height: screenHeight * 0.3, // 30% of screen height
                 ),
@@ -181,6 +187,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () {
+                    handleSignUp;
                     // Add sign up functionality here based on role
                     String firstName = _firstNameController.text;
                     String lastName = _lastNameController.text;
@@ -233,8 +240,23 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-}
+  void handleSignUp() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
 
-void main() => runApp(MaterialApp(
-  home: SignUpPage(),
-));
+    if (email.isEmpty || password.isEmpty) {
+      print("Email and password cannot be empty");
+      return;
+    }
+
+    try {
+      User? user = await _auth.signUpWithEmailAndPassword(email, password);
+      if (user != null) {
+        print("User created successfully");
+        Navigator.pushNamed(context, "/main"); // Navigate to main screen after sign-up
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+}

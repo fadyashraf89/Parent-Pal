@@ -12,7 +12,7 @@ class FooterWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           IconButton(
-            icon: Icon(Icons.home_outlined),
+            icon: Icon(Icons.home),
             iconSize: 30,
             color: Color(0xFF5571A7).withOpacity(0.8),
             onPressed: () {
@@ -20,7 +20,7 @@ class FooterWidget extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: Icon(Icons.search_outlined),
+            icon: Icon(Icons.article),
             iconSize: 30,
             color: Color(0xFF5571A7).withOpacity(0.8),
             onPressed: () {
@@ -30,7 +30,7 @@ class FooterWidget extends StatelessWidget {
           IconButton(
             iconSize: 30,
             color: Color(0xFF5571A7).withOpacity(0.8),
-            icon: Icon(Icons.message_outlined),
+            icon: Icon(Icons.message),
             onPressed: () {
               // Handle message button press
             },
@@ -38,7 +38,7 @@ class FooterWidget extends StatelessWidget {
           IconButton(
             iconSize: 30,
             color: Color(0xFF5571A7).withOpacity(0.8),
-            icon: Icon(Icons.settings_outlined),
+            icon: Icon(Icons.settings),
             onPressed: () {
               // Handle settings button press
             },

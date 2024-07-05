@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   Color focusedColor = Color(0xFF5571A7); // Define focused border color
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Role selection
   String _selectedRole = 'Parent'; // Default role
@@ -179,4 +181,3 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-void main() => runApp(LoginPage());
