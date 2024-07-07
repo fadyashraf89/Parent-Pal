@@ -1,66 +1,17 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:parent_pal/models/MyAppBar.dart';
 import 'package:parent_pal/models/card_with_image.dart';
 import 'package:parent_pal/models/footer.dart';
 import 'package:parent_pal/pages/activities.dart';
-import 'package:parent_pal/pages/add-child.dart';
 import 'package:parent_pal/pages/bedtime_stories_page.dart';
-import 'package:parent_pal/pages/edit_profile.dart';
 import 'package:parent_pal/pages/emergencies_page.dart';
 import 'package:parent_pal/pages/suggest_schools.dart';
 
-class ChildHomePage extends StatefulWidget {
+class ChildHomePage extends StatelessWidget {
   final String name;
-  final String? image; // Accept both File and String
+  final String image;
 
-  ChildHomePage({Key? key, required this.name, required this.image}) : super(key: key);
-
-  @override
-  _ChildHomePageState createState() => _ChildHomePageState();
-}
-
-class _ChildHomePageState extends State<ChildHomePage> {
-  String _userName = '';
-  String _image = ''; // Updated to store URL from Firebase
-
-  @override
-  void initState() {
-    super.initState();
-    _userName = widget.name;
-    _getCurrentUserName();
-    _getCurrentImage(); // Fetch initial image from Firebase
-  }
-
-  void _getCurrentUserName() async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(currentUser.uid)
-          .get();
-      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-      setState(() {
-        _userName = "${userData['firstName']} ${userData['lastName']}";
-      });
-    }
-  }
-
-  void _getCurrentImage() async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(currentUser.uid)
-          .get();
-      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-      setState(() {
-        _image = userData['profileImage'] ?? ''; // Update _image with profileImage URL
-      });
-    }
-  }
+  ChildHomePage({super.key, required this.name, required this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -88,21 +39,12 @@ class _ChildHomePageState extends State<ChildHomePage> {
                   ),
                 ),
                 child: ClipOval( // Use ClipOval to clip overflowing content
-                  child: widget.image != null
-                      ? (widget.image!.startsWith('assets/')
-                      ? Image.asset(
-                    widget.image!,
+                  child: Image.asset(
+                    image, // Verify the image path is correct
                     width: 185.0, // Adjust image width as needed
                     height: 185.0, // Adjust image height as needed
                     fit: BoxFit.cover, // Ensure image fills the container
-                  )
-                      : Image.file(
-                    File(widget.image!),
-                    width: 185.0, // Adjust image width as needed
-                    height: 185.0, // Adjust image height as needed
-                    fit: BoxFit.cover, // Ensure image fills the container
-                  ))
-                      : Icon(Icons.person, size: 185.0), // Fallback to icon
+                  ),
                 ),
               ),
               SizedBox(height: 20.0), // Add spacing
@@ -113,12 +55,13 @@ class _ChildHomePageState extends State<ChildHomePage> {
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     children: [
+
                       Row(
                         children: [
                           Row(
                             children: [
                               Text(
-                                "Hello, $_userName  ",
+                                "Hello, $name  ",
                                 // Include spaces for better formatting
                                 style: TextStyle(
                                   fontSize: 16.0,
@@ -128,36 +71,30 @@ class _ChildHomePageState extends State<ChildHomePage> {
                                 ),
                               ),
                               CircleAvatar(
-                                backgroundColor: Color(0xFF5571A7),
+                                backgroundColor: Color(
+                                    0xFF5571A7),
                                 radius: 13,
                                 child: IconButton(
                                   icon: Icon(Icons.edit),
                                   color: Colors.white,
                                   iconSize: 10,
                                   onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProfilePage(updateNameCallback: _updateUserName))); // Replace with actual screen
+                                    // Handle button press (optional)
                                   },
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 5.0),
                                 child: CircleAvatar(
-                                  backgroundColor: Color(0xFF5571A7),
+                                  backgroundColor: Color(
+                                      0xFF5571A7),
                                   radius: 13,
                                   child: IconButton(
                                     icon: Icon(Icons.add),
                                     color: Colors.white,
                                     iconSize: 11,
                                     onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AddChildPage())); // Replace with actual screen
+                                      // Handle button press (optional)
                                     },
                                   ),
                                 ),
@@ -231,16 +168,13 @@ class _ChildHomePageState extends State<ChildHomePage> {
                   ),
                 ),
               ),
+
             ],
           ),
         ),
       ),
     );
   }
-
-  void _updateUserName(String newName) {
-    setState(() {
-      _userName = newName;
-    });
-  }
 }
+
+

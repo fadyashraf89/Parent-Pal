@@ -1,68 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:parent_pal/models/card_with_image.dart';
 import 'package:parent_pal/models/footer.dart';
-import 'package:parent_pal/pages/QAConsultantPage.dart';
 
-class ConsultantHomePage extends StatefulWidget {
+class ConsultationPage extends StatefulWidget {
   @override
-  _ConsultantHomePageState createState() => _ConsultantHomePageState();
+  _ConsultationPageState createState() => _ConsultationPageState();
 }
 
-class _ConsultantHomePageState extends State<ConsultantHomePage> {
-  final TextEditingController _questionController = TextEditingController();
-  List<Map<String, String>> qaData = [];
-
-  void _submitQuestion() {
-    if (_questionController.text.isNotEmpty) {
-      setState(() {
-        qaData.add({
-          "date": DateTime.now().toString(),
-          "question": _questionController.text,
-          "answer": "",
-        });
-        _questionController.clear();
-      });
-    }
-  }
-
-  int _selectedIndex = 0; // Index for the selected bottom navigation item
-
-  // Define a list of pages corresponding to each bottom navigation item
-  static List<Widget> _widgetOptions = <Widget>[
-    ConsultantHomePage(), // Placeholder for the current page (ConsultationPage)
-    QAConsultantPage(qaData: [],), // QAPage to navigate to
-    // Add more pages if necessary
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    // Navigate to the selected page
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => _widgetOptions[index]),
-    );
-  }
-
+class _ConsultationPageState extends State<ConsultationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer),
-            label: 'Q&A',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue, // Adjust as needed
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: FooterWidget(),
       backgroundColor: Color(0xFFF8F8F8), // Light gray background
       appBar: AppBar(
         backgroundColor: Color(0xFF5571A7),
@@ -96,10 +45,12 @@ class _ConsultantHomePageState extends State<ConsultantHomePage> {
               mainAxisAlignment: MainAxisAlignment.start, // Align at top
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                // **Top Section - Text and Image**
                 SizedBox(height: 20.0), // Add spacing
 
+                // **Your Q&A Section**
                 Container(
-                  width: double.infinity, // Full width
+                  width: 350, // Full width
                   padding: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -110,46 +61,40 @@ class _ConsultantHomePageState extends State<ConsultantHomePage> {
                     ),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: CircleAvatar(
-                              backgroundColor: Color(0xFF5571A7),
-                              child: IconButton(
-                                icon: Icon(Icons.email_rounded),
-                                color: Colors.white,
-                                iconSize: 20,
-                                onPressed: () {
-                                  // Handle button press (optional)
-                                },
-                              ),
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: CircleAvatar(
+                          backgroundColor: Color(0xFF5571A7),
+                          child: IconButton(
+                            icon: Icon(Icons.email_rounded),
+                            color: Colors.white,
+                            iconSize: 20,
+                            onPressed: () {
+                              // Handle button press (optional)
+                            },
                           ),
-                          Text(
-                            'Your Q&A',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontFamily: "Rubik",
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.arrow_right),
-                        color: Color(0xFF5571A7),
-                        iconSize: 40,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => QAConsultantPage(qaData: qaData),
-                            ),
-                          );
-                        },
+                      Text(
+                        'Your Q&A',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontFamily: "Rubik",
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 150.0),
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_right),
+                          color: Color(0xFF5571A7),
+                          iconSize: 40,
+                          onPressed: () {
+                            // Handle button press (optional)
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -157,7 +102,8 @@ class _ConsultantHomePageState extends State<ConsultantHomePage> {
 
                 Container(
                   margin: EdgeInsets.only(top: 20.0),
-                  width: double.infinity, // Full width
+                  width: double.infinity,
+                  // Full width
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -184,7 +130,6 @@ class _ConsultantHomePageState extends State<ConsultantHomePage> {
                       ),
                       SizedBox(height: 10.0),
                       TextField(
-                        controller: _questionController,
                         maxLines: 5, // Allow multiple lines for input
                         decoration: InputDecoration(
                           hintText: 'Type your question here...',
@@ -196,10 +141,11 @@ class _ConsultantHomePageState extends State<ConsultantHomePage> {
                       ),
                       SizedBox(height: 10.0),
                       ElevatedButton(
-                        onPressed: _submitQuestion,
+                        onPressed: () {
+                          // Handle submit question logic
+                        },
                         child: Text('Ask Question',
                             style: TextStyle(
-                                color: Colors.white,
                                 fontFamily: "Rubik",
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20)),
@@ -214,6 +160,7 @@ class _ConsultantHomePageState extends State<ConsultantHomePage> {
 
                 SizedBox(height: 20.0), // Add spacing
 
+                // **Our Experts Section - Title**
                 Text(
                   'Our Experts',
                   style: TextStyle(
@@ -224,6 +171,7 @@ class _ConsultantHomePageState extends State<ConsultantHomePage> {
 
                 SizedBox(height: 10.0), // Add spacing
 
+                // **Our Experts Section - List View**
                 GridView.builder(
                   shrinkWrap: true,
                   // Prevent grid view from expanding
@@ -234,17 +182,18 @@ class _ConsultantHomePageState extends State<ConsultantHomePage> {
                     crossAxisSpacing: 10.0, // Spacing between columns
                     mainAxisSpacing: 10.0, // Spacing between rows
                     childAspectRatio:
-                    1, // Aspect ratio of each card (width/height)
+                        1, // Aspect ratio of each card (width/height)
                   ),
-                  itemCount: 6,
+                  itemCount: 10,
                   // Adjust for number of experts
-                  itemBuilder: (context, index) => CardWithImage(
-                    title: 'Dr. Robert Andreson',
-                    image: "assets/images/avatar.png",
+                  itemBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    // Add spacing below
+                    child: CardWithImage(
+                        title: 'Dr. Robert Andreson',
+                        image: "assets/images/avatar.png"),
                   ),
                 ),
-
-                SizedBox(height: 20.0), // Add spacing
               ],
             ),
           ),

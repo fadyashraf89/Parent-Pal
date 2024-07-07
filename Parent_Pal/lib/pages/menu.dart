@@ -1,20 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:parent_pal/models/MyAppBar.dart';
-import 'package:parent_pal/pages/login_page.dart';
 import 'about.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'settings.dart';
 
 class MenuPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize:
+        Size.fromHeight(kToolbarHeight), // Adjust height if needed
+    child: MyAppBar(PageName: "Menu"),
+    ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // User profile image container
+
+              // Settings button
+              _buildMenuButton(
+                context,
+                icon: Icons.settings,
+                label: 'Settings',
+                onTap: () {
+                  // Navigate to settings page or handle settings action
+                 Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => settings()),
+                  );
+                },
+              ),
               SizedBox(height: 10),
               // About ParentPal button
               _buildMenuButton(
@@ -35,7 +53,10 @@ class MenuPage extends StatelessWidget {
                 context,
                 icon: Icons.logout,
                 label: 'Log out',
-                onTap: () => handleLogout(context),
+                onTap: () {
+                  // Handle log out action
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
               ),
             ],
           ),
@@ -86,18 +107,3 @@ class MenuPage extends StatelessWidget {
     );
   }
 }
-
-void handleLogout(BuildContext context) async {
-  // Get shared preferences instance
-  final prefs = await SharedPreferences.getInstance();
-
-  // Clear user data (adapt based on your app's data)
-  await prefs.clear();  // This clears all stored data, adjust if needed
-
-  // Navigate to login page (replace with your actual login page)
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (context) => LoginPage()),
-  );
-}
-

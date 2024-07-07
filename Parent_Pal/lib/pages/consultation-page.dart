@@ -3,8 +3,6 @@ import 'package:parent_pal/models/MyAppBar.dart';
 import 'package:parent_pal/models/card_with_image.dart';
 import 'package:parent_pal/models/footer.dart';
 import 'package:parent_pal/pages/qa_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class ConsultationPage extends StatefulWidget {
   @override
@@ -15,90 +13,61 @@ class _ConsultationPageState extends State<ConsultationPage> {
   final TextEditingController _questionController = TextEditingController();
   List<Map<String, String>> qaData = [];
 
-  Future<List<Map<String, String>>> fetchConsultants() async {
-    List<Map<String, String>> consultantsList = [];
-
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .where('isConsultant', isEqualTo: true)
-          .get();
-
-      querySnapshot.docs.forEach((doc) {
-        String firstName = doc['firstName'];
-        String lastName = doc['lastName'];
-        consultantsList.add({
-          'firstName': firstName,
-          'lastName': lastName,
-        });
-      });
-    } catch (e) {
-      print('Error fetching consultants: $e');
-    }
-
-    return consultantsList;
-  }
-
-  Future<Map<String, String>> fetchCurrentUser() async {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-
-      return {
-        'firstName': userDoc['firstName'],
-        'lastName': userDoc['lastName'],
-      };
-    } else {
-      throw Exception('No user is currently logged in.');
-    }
-  }
-
-  void _submitQuestion() async {
+  void _submitQuestion() {
     if (_questionController.text.isNotEmpty) {
-      String question = _questionController.text;
-
-      try {
-        Map<String, String> currentUser = await fetchCurrentUser();
-
-        await FirebaseFirestore.instance.collection('questions').add({
-          'date': DateTime.now(),
-          'question': question,
-          'firstName': currentUser['firstName'],
-          'lastName': currentUser['lastName'],
+      setState(() {
+        qaData.add({
+          "date": DateTime.now().toString(),
+          "question": _questionController.text,
+          "answer": "",
         });
-
-        setState(() {
-          qaData.add({
-            "date": DateTime.now().toString(),
-            "question": question,
-          });
-          _questionController.clear();
-        });
-
-        // Show a success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Question submitted successfully')),
-        );
-      } catch (e) {
-        print('Error adding question: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to submit question')),
-        );
-      }
+        _questionController.clear();
+      });
     }
+  }
+
+  int _selectedIndex = 0; // Index for the selected bottom navigation item
+
+  // Define a list of pages corresponding to each bottom navigation item
+  static List<Widget> _widgetOptions = <Widget>[
+    ConsultationPage(), // Placeholder for the current page (ConsultationPage)
+    QAPage(qaData: [],), // QAPage to navigate to
+    // Add more pages if necessary
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    // Navigate to the selected page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => _widgetOptions[index]),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: FooterWidget(),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.question_answer),
+            label: 'Q&A',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue, // Adjust as needed
+        onTap: _onItemTapped,
+      ),
       backgroundColor: Color(0xFFF8F8F8), // Light gray background
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight), // Adjust height if needed
+        preferredSize:
+        Size.fromHeight(kToolbarHeight), // Adjust height if needed
         child: MyAppBar(PageName: "Consultation"),
       ),
       body: SafeArea(
@@ -161,7 +130,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => QAPage(), // Pass the qaData list
+                              builder: (context) => QAPage(qaData: qaData),
                             ),
                           );
                         },
@@ -239,38 +208,24 @@ class _ConsultationPageState extends State<ConsultationPage> {
 
                 SizedBox(height: 10.0), // Add spacing
 
-                FutureBuilder<List<Map<String, String>>>(
-                  future: fetchConsultants(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (snapshot.hasData) {
-                      return GridView.builder(
-                        shrinkWrap: true,
-                        // Prevent grid view from expanding
-                        physics: NeverScrollableScrollPhysics(),
-                        // Disable scrolling
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // Adjust for number of columns
-                          crossAxisSpacing: 10.0, // Spacing between columns
-                          mainAxisSpacing: 10.0, // Spacing between rows
-                          childAspectRatio:
-                          1, // Aspect ratio of each card (width/height)
-                        ),
-                        itemCount: snapshot.data!.length,
-                        // Adjust for number of experts
-                        itemBuilder: (context, index) => CardWithImage(
-                          title:
-                          '${snapshot.data![index]['firstName']} ${snapshot.data![index]['lastName']}',
-                          image: "assets/images/avatar.png",
-                        ),
-                      );
-                    } else {
-                      return SizedBox.shrink();
-                    }
-                  },
+                GridView.builder(
+                  shrinkWrap: true,
+                  // Prevent grid view from expanding
+                  physics: NeverScrollableScrollPhysics(),
+                  // Disable scrolling
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, // Adjust for number of columns
+                    crossAxisSpacing: 10.0, // Spacing between columns
+                    mainAxisSpacing: 10.0, // Spacing between rows
+                    childAspectRatio:
+                    1, // Aspect ratio of each card (width/height)
+                  ),
+                  itemCount: 6,
+                  // Adjust for number of experts
+                  itemBuilder: (context, index) => CardWithImage(
+                    title: 'Dr. Robert Andreson',
+                    image: "assets/images/avatar.png",
+                  ),
                 ),
 
                 SizedBox(height: 20.0), // Add spacing
