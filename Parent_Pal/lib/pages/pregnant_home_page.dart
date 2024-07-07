@@ -1,16 +1,48 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:parent_pal/models/MyAppBar.dart';
 import 'package:parent_pal/models/card_with_image.dart';
 import 'package:parent_pal/models/footer.dart';
+import 'package:parent_pal/pages/add-child.dart';
 import 'package:parent_pal/pages/birth_education.dart';
 import 'package:parent_pal/pages/calm_journey.dart';
+import 'package:parent_pal/pages/edit_profile.dart';
 import 'package:parent_pal/pages/nutrition.dart';
 import 'package:parent_pal/pages/pregnancy_emergencies.dart';
 
-class PregnantHomePage extends StatelessWidget {
+class PregnantHomePage extends StatefulWidget {
   final String name;
 
-  PregnantHomePage({super.key, required this.name});
+  PregnantHomePage({Key? key, required this.name}) : super(key: key);
+
+  @override
+  State<PregnantHomePage> createState() => _PregnantHomePageState();
+}
+
+class _PregnantHomePageState extends State<PregnantHomePage> {
+  String _userName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _userName = widget.name;
+    _getCurrentUserName();
+  }
+
+  void _getCurrentUserName() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
+      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+      setState(() {
+        _userName = "${userData['firstName']} ${userData['lastName']}";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,33 +57,34 @@ class PregnantHomePage extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          physics:
-              NeverScrollableScrollPhysics(), // Disable scrolling if needed
+          physics: NeverScrollableScrollPhysics(),
+          // Disable scrolling if needed
           child: Column(
             children: [
               SizedBox(height: 20.0), // Add spacing
+
               // **Top Section**
               Container(
                 decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    // Set the shape to circle
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    // Add rounded corners
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(0, 2), // Bottom shadow
-                      ),
-                    ]),
+                  shape: BoxShape.rectangle,
+                  // Set the shape to rectangle
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  // Add rounded corners
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: Offset(0, 2), // Bottom shadow
+                    ),
+                  ],
+                ),
                 child: ClipRRect(
                   // Use ClipRRect to clip overflowing content
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   // Add rounded corners again for clipping
                   child: Image.asset(
                     "assets/images/iStock-867369446.jpg",
-                    // Verify the image path is correct
                     width: 290.0, // Adjust image width as needed
                     height: 220.0, // Adjust image height as needed
                     fit: BoxFit.cover, // Ensure image fills the container
@@ -72,7 +105,7 @@ class PregnantHomePage extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                "Hello, $name ",
+                                "Hello, $_userName ",
                                 style: TextStyle(
                                   fontSize: 16.0,
                                   fontWeight: FontWeight.bold,
@@ -88,7 +121,11 @@ class PregnantHomePage extends StatelessWidget {
                                   color: Colors.white,
                                   iconSize: 10,
                                   onPressed: () {
-                                    // Handle button press (optional)
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ProfilePage(updateNameCallback: _updateUserName)),
+                                    );
                                   },
                                 ),
                               ),
@@ -102,7 +139,11 @@ class PregnantHomePage extends StatelessWidget {
                                     color: Colors.white,
                                     iconSize: 11,
                                     onPressed: () {
-                                      // Handle button press (optional)
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => AddChildPage()),
+                                      );
                                     },
                                   ),
                                 ),
@@ -131,8 +172,7 @@ class PregnantHomePage extends StatelessWidget {
                             },
                             child: CardWithImage(
                               title: "Nutrition Tips",
-                              image:
-                                  "assets/images/istockphoto-1320094414-612x612.jpg",
+                              image: "assets/images/istockphoto-1320094414-612x612.jpg",
                             ),
                           ),
                           GestureDetector(
@@ -183,27 +223,9 @@ class PregnantHomePage extends StatelessWidget {
       ),
     );
   }
+  void _updateUserName(String newName) {
+    setState(() {
+      _userName = newName;
+    });
+  }
 }
-//
-// AdviceCard(
-// image: 'assets/images/istockphoto-1320094414-612x612.jpg',
-// title: 'Nutrition',
-// description: 'Have a healthy diet in pregnancy',
-// ),
-// AdviceCard(
-// image: 'assets/images/Screenshot (187).png',
-// title: 'Birth Education',
-// description:
-// 'Educate, empower, embrace birthing journey begins',
-// ),
-// AdviceCard(
-// image: 'assets/images/Screenshot (191).png',
-// title: 'Calm Journey',
-// description:
-// 'Relax and unite with your mind in between the tensed environment of Pregnancy',
-// ),
-// AdviceCard(
-// image: 'assets/images/Screenshot (190).png',
-// title: 'Emergencies',
-// description: 'Parenting emergency essentials',
-// ),

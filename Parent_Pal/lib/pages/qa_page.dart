@@ -1,25 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:parent_pal/models/footer.dart';
-import 'package:parent_pal/pages/qa_details_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class QAPage extends StatelessWidget {
-  final List<Map<String, String>> qaData;
+class QAPage extends StatefulWidget {
+  @override
+  _QAPageState createState() => _QAPageState();
+}
 
-  QAPage({required this.qaData});
+class _QAPageState extends State<QAPage> {
+  Map<String, TextEditingController> answerControllers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchQuestions(); // Fetch questions when widget initializes
+  }
+
+  Future<void> fetchQuestions() async {
+    try {
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('questions').get();
+
+      // Initialize answerControllers for each question
+      answerControllers = Map.fromIterable(
+        querySnapshot.docs,
+        key: (doc) => doc.id,
+        value: (doc) => TextEditingController(),
+      );
+
+      setState(() {}); // Update UI after fetching questions
+    } catch (e) {
+      print('Error fetching questions: $e');
+    }
+  }
+
+  void _submitAnswer(String questionId) async {
+    String answer = answerControllers[questionId]!.text.trim();
+
+    if (answer.isNotEmpty) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('questions')
+            .doc(questionId)
+            .collection('answers')
+            .add({
+          'answer': answer,
+          'answeredBy': FirebaseAuth.instance.currentUser!.uid,
+          'date': DateTime.now(),
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Answer submitted successfully')),
+        );
+
+        // Clear answer text field after submission
+        answerControllers[questionId]!.clear();
+      } catch (e) {
+        print('Error submitting answer: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to submit answer')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: FooterWidget(),
-      backgroundColor: Color(0xFFF8F8F8),
       appBar: AppBar(
         backgroundColor: Color(0xFF5571A7),
         title: Padding(
-          padding: const EdgeInsets.only(left: 50.0),
+          padding: const EdgeInsets.only(left: 10.0),
           child: Text(
-            'Q&A',
+            "Q&A",
             style: TextStyle(
-              fontSize: 28,
+              fontSize: 24,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -34,63 +89,91 @@ class QAPage extends StatelessWidget {
           ),
         ),
       ),
-      body: SafeArea(
-        child: ListView.builder(
-          itemCount: qaData.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QADetailPage(
-                      question: qaData[index]['question']!,
-                      date: qaData[index]['date']!,
-                      answer: qaData[index]['answer']!,
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('questions').snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No questions found.'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot questionDoc = snapshot.data!.docs[index];
+                String questionId = questionDoc.id;
+                String questionText = questionDoc['question'];
+
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            questionText,
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8),
+                          FutureBuilder<QuerySnapshot>(
+                            future: FirebaseFirestore.instance
+                                .collection('questions')
+                                .doc(questionId)
+                                .collection('answers')
+                                .get(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                                List<String> answers = snapshot.data!.docs
+                                    .map((doc) => doc['answer'].toString())
+                                    .toList();
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: answers.map((answer) {
+                                    return Text(
+                                      '- $answer',
+                                      style: TextStyle(color: Colors.black),
+                                    );
+                                  }).toList(),
+                                );
+                              } else {
+                                return SizedBox.shrink();
+                              }
+                            },
+                          ),
+                          SizedBox(height: 8),
+                          TextField(
+                            controller: answerControllers[questionId],
+                            decoration: InputDecoration(
+                              hintText: 'Type your answer here...',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () => _submitAnswer(questionId),
+                            child: Text('Submit Answer'),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
               },
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                padding: EdgeInsets.all(20.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 3,
-                      offset: Offset(0, 2), // Bottom shadow
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      qaData[index]['question']!,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF5571A7),
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-                    Text(
-                      qaData[index]['date']!,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             );
-          },
-        ),
+          }
+        },
       ),
     );
   }

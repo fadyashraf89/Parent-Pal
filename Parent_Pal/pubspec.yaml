@@ -53,6 +53,9 @@ dependencies:
   cached_network_image:
   cloud_firestore:
   firebase_storage:
+  shared_preferences:
+  flutter_local_notifications: ^17.2.1
+  datetime_picker_formfield: ^2.0.1
 
 dev_dependencies:
   flutter_test:

@@ -32,11 +32,12 @@ class CardWithImage extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center, // Center content
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
               image,
-              width: 120.0, // Adjust image width as needed
-              height: 80.0, // Adjust image height as needed
+              width: 100.0, // Adjust image width as needed
+              height: 60.0, // Adjust image height as needed
             ),
             SizedBox(height: 10.0), // Add spacing
 

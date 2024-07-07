@@ -1,179 +1,129 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:parent_pal/pages/forgot-pass.dart';
+import 'package:parent_pal/pages/sign-up.dart';
+import './pregnant_home_page.dart';
+import './child_homepage.dart';
+import 'package:crypto/crypto.dart'; // Add this for hashing
+import 'dart:convert'; // Ensure this import is correct
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => LoginState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  // Text field controllers for email and password
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  Color focusedColor = Color(0xFF5571A7); // Define focused border color
+class LoginState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool _isObscure = true;
 
-  // Role selection
-  String _selectedRole = 'Parent'; // Default role
-
-  // Role selection
-  String _selectedRole = 'Parent'; // Default role
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Prevent the UI from resizing when the keyboard appears
-      body: Padding(
-        padding: const EdgeInsets.only(top: 60),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: ListView(
-              physics: NeverScrollableScrollPhysics(), // Disable scrolling
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        "assets/images/app-logo.png",
-                        width: 180,
-                        height: 180,
-                      ),
-                      Text("Parent Pal",
-                          style: TextStyle(
-                              fontFamily: "Pacifico",
-                              fontSize: 48,
-                              color: Color(0xFF5571A7))),
-                    ],
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/app-logo.png',
+                  width: screenWidth * 0.5,
+                  height: screenHeight * 0.3,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Parent Pal',
+                  style: TextStyle(
+                    fontFamily: 'Pacifico',
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF5571A7),
                   ),
                 ),
-
-                // Email text field with frame
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: TextField(
-                    style: TextStyle(fontFamily: "Rubik"),
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(color: focusedColor, width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(color: Colors.grey, width: 2.0),
-                      ),
+                SizedBox(height: 35),
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          _isObscure = !_isObscure;
+                        });
+                      },
                     ),
                   ),
+                  obscureText: _isObscure,
                 ),
-                // Password text field with frame
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: TextField(
-                    style: TextStyle(fontFamily: "Rubik"),
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(color: focusedColor, width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(color: Colors.grey, width: 2.0),
-                      ),
-                    ),
-                    obscureText: true,
-                  ),
-                ),
-                // Role selection dropdown
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedRole,
-                    items: ['Parent', 'Consultant'].map((String role) {
-                      return DropdownMenuItem<String>(
-                        value: role,
-                        child: Text(role),
+                SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
                       );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedRole = newValue!;
-                      });
                     },
-                    decoration: InputDecoration(
-                      labelText: 'Role',
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(color: focusedColor, width: 2.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(color: Colors.grey, width: 2.0),
-                      ),
+                    child: Text(
+                      'Forgot password?',
+                      style: TextStyle(color: Colors.blueGrey),
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        // Handle forgot password logic
-                      },
-                      child: Text(
-                        'Forgot password?',
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Color(0xFF5571A7),
-                            fontFamily: "Rubik",
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20.0), // Add spacing between elements
-                // Login button with full width
+                SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () {
-                    // Handle login logic based on role
-                    String email = _emailController.text;
-                    String password = _passwordController.text;
-                    String role = _selectedRole;
-
-                    // Implement your login logic here
-                    // For example:
-                    if (role == 'Parent') {
-                      // Parent login logic
-                    } else if (role == 'Consultant') {
-                      // Consultant login logic
-                    }
-                  },
-                  child:
-                  Text('Login', style: TextStyle(fontFamily: "Pacifico", fontSize: 20,color:Colors.white)),
+                  onPressed: _loginUser,
                   style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 50),
-                      backgroundColor: Color(0xFF5571A7)),
-                ),
-                SizedBox(height: 20.0), // Add spacing between elements
-                // Sign up section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text('Don\'t have an account?',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, fontFamily: "Rubik")),
-                    TextButton(
-                      onPressed: () {
-                        // Navigate to sign up page
-                      },
-                      child: Text('Sign Up',
-                          style: TextStyle(
-                              fontSize: 16,fontWeight: FontWeight.bold, fontFamily: "Rubik", color: Color(0xFF5571A7))),
+                    backgroundColor: Color(0xFF5571A7),
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  ),
+                  child: Text(
+                    'Login',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: 'Pacifico',
                     ),
-                  ],
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage())); // Replace with actual screen
+                  },
+                  child: Text(
+                    "Don't have an account? Sign Up",
+                    style: TextStyle(color: Colors.blue),
+                  ),
                 ),
               ],
             ),
@@ -182,5 +132,90 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-}
 
+  void _loginUser() async {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String hashedPassword = sha256.convert(utf8.encode(password)).toString();
+
+    if (email.isEmpty || hashedPassword.isEmpty) {
+      _showSnackBar('Email or password cannot be empty', Colors.red);
+      return;
+    }
+
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: hashedPassword,
+      );
+
+      User? user = userCredential.user;
+      if (user != null) {
+        // User authenticated successfully
+        print('Login successful for user: ${user.uid}');
+        _showSnackBar('Login successful', Colors.green);
+
+        // Check user details in Firestore
+        DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (snapshot.exists) {
+          // Extract first name from user data
+          String firstName = snapshot.data()?['firstName'] ?? '';
+          String lastName = snapshot.data()?['lastName'] ?? '';
+          String fullName = firstName + " " + lastName;
+
+          String? profileImage = snapshot.data()?['profileImage'];
+          if (profileImage == null) {
+            profileImage = 'assets/images/avatar.png';
+          }
+
+          String gender = snapshot.data()?['gender'];
+          bool isPregnant = snapshot.data()?['isPregnant'] ?? false;
+
+          if (isPregnant) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => PregnantHomePage(name: fullName)),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => ChildHomePage(name: fullName, image: profileImage)),
+            );
+          }
+        } else {
+          print('User document does not exist in Firestore');
+          _showSnackBar('User data not found', Colors.red);
+        }
+      } else {
+        print('User object is null');
+        _showSnackBar('Login failed, user is null', Colors.red);
+      }
+    } catch (e) {
+      // Handle specific authentication errors
+      print('Login failed with error: $e');
+      String errorMessage = 'Login failed. Please check your email and password.';
+      if (e is FirebaseAuthException) {
+        if (e.code == 'user-not-found') {
+          errorMessage = 'No user found with this email.';
+        } else if (e.code == 'wrong-password') {
+          errorMessage = 'Wrong password provided for this user.';
+        }
+      }
+      _showSnackBar(errorMessage, Colors.red);
+    }
+  }
+
+  void _showSnackBar(String message, Color backgroundColor) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: backgroundColor,
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+}
