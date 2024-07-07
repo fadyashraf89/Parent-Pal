@@ -8,8 +8,6 @@ import 'package:location/location.dart' as l;
 import 'package:parent_pal/models/MyAppBar.dart';
 import 'package:parent_pal/models/footer.dart';
 import 'package:parent_pal/models/school_info.dart';
-import 'package:parent_pal/pages/school_details.dart';
-
 class SchoolsMap extends StatefulWidget {
   const SchoolsMap({Key? key}) : super(key: key);
 
